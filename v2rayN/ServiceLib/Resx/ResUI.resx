@@ -1806,6 +1806,9 @@ The "Get Certificate" action may fail if a self-signed certificate is used or if
   <data name="MsgTunNeedsHelperCore" xml:space="preserve">
     <value>Core {0} has no tun inbound, so it cannot carry the tunnel itself. A {1} helper core will hold TUN and forward to it.</value>
   </data>
+  <data name="MsgChainNeedsTunnelCore" xml:space="preserve">
+    <value>Core {0} cannot tunnel one config through another (no dialer-proxy); this group runs on {1} instead.</value>
+  </data>
   <data name="MsgOptionsConflict" xml:space="preserve">
     <value>Conflict between {0} and {1}</value>
   </data>

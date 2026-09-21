@@ -665,13 +665,19 @@ public sealed class AppManager
 
     public ECoreType GetCoreType(ProfileItem? profileItem, EConfigType eConfigType)
     {
-        if (profileItem?.CoreType != null)
+        var coreType = profileItem?.CoreType
+                       ?? _config.CoreTypeItem?.FirstOrDefault(it => it.ConfigType == eConfigType)?.CoreType
+                       ?? ECoreType.Xray;
+
+        // Group and chain outbounds are wired hop to hop with dialer-proxy, which v2ray-core does
+        // not implement: it ignores the field and sends traffic straight to the last server, so the
+        // chain looks connected while nothing is tunnelled through the first hop.
+        if (eConfigType.IsGroupType() && !Global.TunnelCapableCoreTypes.Contains(coreType))
         {
-            return (ECoreType)profileItem.CoreType;
+            return ECoreType.Xray;
         }
 
-        var item = _config.CoreTypeItem?.FirstOrDefault(it => it.ConfigType == eConfigType);
-        return item?.CoreType ?? ECoreType.Xray;
+        return coreType;
     }
 
     #endregion Core Type

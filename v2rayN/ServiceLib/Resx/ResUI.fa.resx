@@ -1776,4 +1776,7 @@ The "Get Certificate" action may fail if a self-signed certificate is used or if
   <data name="MsgTunNeedsHelperCore" xml:space="preserve">
     <value>هسته {0} اینباند tun ندارد، پس نمی‌تواند خودش تونل را نگه دارد؛ یک هسته کمکی {1} تونل را بر عهده می‌گیرد و ترافیک را به آن می‌سپارد.</value>
   </data>
+  <data name="MsgChainNeedsTunnelCore" xml:space="preserve">
+    <value>هسته {0} نمی‌تواند یک کانفیگ را داخل کانفیگ دیگر تونل کند (dialer-proxy ندارد)؛ این گروه به‌جای آن با {1} اجرا می‌شود.</value>
+  </data>
 </root>

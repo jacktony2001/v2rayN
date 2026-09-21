@@ -57,6 +57,11 @@ public class CoreConfigContextBuilder
         {
             validatorResult.Warnings.Add(string.Format(ResUI.MsgTunNeedsHelperCore, runCoreType, ECoreType.sing_box));
         }
+
+        if (node.ConfigType.IsGroupType() && node.CoreType is ECoreType.v2fly or ECoreType.v2fly_v5)
+        {
+            validatorResult.Warnings.Add(string.Format(ResUI.MsgChainNeedsTunnelCore, node.CoreType, ECoreType.Xray));
+        }
         var (actNode, nodeValidatorResult) = await ResolveNodeAsync(context, node);
         if (!nodeValidatorResult.Success)
         {
