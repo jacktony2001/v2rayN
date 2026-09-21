@@ -160,9 +160,13 @@ public class CoreConfigContextBuilder
         }
 
         var preResult = await BuildPreSocksIfNeeded(mainResult.Context);
+        // The tun inbound lands on the helper core when there is one, and only the core holding it
+        // can honour the routing options or be conflicted by an interface binding.
+        var tunOwner = ResolveTunOptions(preResult ?? mainResult);
+
         if (preResult is null)
         {
-            return new CoreConfigContextBuilderAllResult(mainResult, null);
+            return new CoreConfigContextBuilderAllResult(tunOwner, null);
         }
 
         var resolvedMainResult = mainResult with
@@ -174,21 +178,72 @@ public class CoreConfigContextBuilder
                 ProtectDomainList = [.. mainResult.Context.ProtectDomainList, .. preResult.Context.ProtectDomainList],
             },
         };
-        if (mainResult.Context.IsTunEnabled
-            && mainResult.Context.AppConfig.TunModeItem.StrictRoute)
+        return new CoreConfigContextBuilderAllResult(resolvedMainResult, tunOwner);
+    }
+
+    /// <summary>
+    ///     Applies the TUN routing options to the core that actually holds the tunnel: clears the
+    ///     interface bindings that strict routing conflicts with, and reports the options that core
+    ///     silently ignores.
+    /// </summary>
+    private static CoreConfigContextBuilderResult ResolveTunOptions(CoreConfigContextBuilderResult tunOwner)
+    {
+        var context = tunOwner.Context;
+        if (!context.IsTunEnabled)
         {
-            var appConfig = JsonUtils.DeepCopy(mainResult.Context.AppConfig);
-            appConfig.CoreBasicItem.BindInterface = string.Empty;
-            appConfig.CoreBasicItem.SendThrough = string.Empty;
-            resolvedMainResult = resolvedMainResult with
-            {
-                Context = resolvedMainResult.Context with
-                {
-                    AppConfig = appConfig,
-                },
-            };
+            return tunOwner;
         }
-        return new CoreConfigContextBuilderAllResult(resolvedMainResult, preResult);
+
+        var tunMode = context.AppConfig.TunModeItem;
+        tunOwner.ValidatorResult.Warnings.AddRange(TunOptionWarnings(tunMode, context.RunCoreType));
+
+        if (!tunMode.StrictRoute
+            || (context.AppConfig.CoreBasicItem.BindInterface.IsNullOrEmpty()
+                && context.AppConfig.CoreBasicItem.SendThrough.IsNullOrEmpty()))
+        {
+            return tunOwner;
+        }
+
+        var appConfig = JsonUtils.DeepCopy(context.AppConfig);
+        appConfig.CoreBasicItem.BindInterface = string.Empty;
+        appConfig.CoreBasicItem.SendThrough = string.Empty;
+        return tunOwner with { Context = context with { AppConfig = appConfig } };
+    }
+
+    /// <summary>
+    ///     Lists the TUN options that were set to a non-default value but mean nothing to
+    ///     <paramref name="tunOwner" />, the core that holds the tunnel.
+    /// </summary>
+    public static List<string> TunOptionWarnings(TunModeItem tunMode, ECoreType tunOwner)
+    {
+        if (tunOwner == ECoreType.sing_box)
+        {
+            // auto_route off installs no routes at all: the tunnel exists but nothing is sent into it.
+            return tunMode.AutoRoute ? [] : [ResUI.MsgTunAutoRouteDisabled];
+        }
+
+        var ignored = new List<string>();
+        if (!tunMode.AutoRoute)
+        {
+            ignored.Add("auto_route");
+        }
+        if (!tunMode.StrictRoute)
+        {
+            ignored.Add("strict_route");
+        }
+        if (tunMode.Stack.IsNotEmpty())
+        {
+            ignored.Add("stack");
+        }
+        if (tunMode.IcmpRouting.IsNotEmpty()
+            && tunMode.IcmpRouting != Global.TunIcmpRoutingPolicies.First())
+        {
+            ignored.Add("icmp_routing");
+        }
+
+        return ignored.Count == 0
+            ? []
+            : [string.Format(ResUI.MsgTunOptionsIgnoredByCore, string.Join(", ", ignored), tunOwner)];
     }
 
     /// <summary>
