@@ -1773,4 +1773,7 @@ The "Get Certificate" action may fail if a self-signed certificate is used or if
   <data name="menuNewUpdate" xml:space="preserve">
     <value>New Update</value>
   </data>
+  <data name="MsgTunNeedsHelperCore" xml:space="preserve">
+    <value>هسته {0} اینباند tun ندارد، پس نمی‌تواند خودش تونل را نگه دارد؛ یک هسته کمکی {1} تونل را بر عهده می‌گیرد و ترافیک را به آن می‌سپارد.</value>
+  </data>
 </root>

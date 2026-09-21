@@ -1556,10 +1556,13 @@ public static class ConfigHandler
     {
         ProfileItem? itemSocks = null;
         var enableLegacyProtect = config.TunModeItem.EnableLegacyProtect;
+        // v2fly has no tun inbound, so it can never own the tunnel itself; a sing-box helper core
+        // has to hold it even when the optional legacy protect is switched off.
+        var coreCannotOwnTun = coreType is ECoreType.v2fly or ECoreType.v2fly_v5;
         if (node.ConfigType != EConfigType.Custom
             && coreType != ECoreType.sing_box
             && config.TunModeItem.EnableTun
-            && enableLegacyProtect)
+            && (enableLegacyProtect || coreCannotOwnTun))
         {
             itemSocks = new ProfileItem()
             {
@@ -1573,7 +1576,11 @@ public static class ConfigHandler
             && node.PreSocksPort is > 0 and <= 65535)
         {
             var customPreCoreType = AppManager.Instance.GetCoreType(null, EConfigType.Custom);
-            var preCoreType = (enableLegacyProtect && config.TunModeItem.EnableTun) ? ECoreType.sing_box : customPreCoreType;
+            var preCoreType = config.TunModeItem.EnableTun
+                              && (enableLegacyProtect
+                                  || customPreCoreType is ECoreType.v2fly or ECoreType.v2fly_v5)
+                ? ECoreType.sing_box
+                : customPreCoreType;
             itemSocks = new ProfileItem()
             {
                 CoreType = preCoreType,

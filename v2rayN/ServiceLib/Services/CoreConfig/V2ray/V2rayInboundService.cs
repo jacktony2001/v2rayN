@@ -12,8 +12,9 @@ public partial class CoreConfigV2rayService
             var inboundConf = _config.Inbound.First();
             var inbound = BuildInbound(inboundConf, EInboundProtocol.socks, true);
             var isUsingLocalMixedPort = _node.Address == Global.Loopback && _node.Port == listenPort;
+            var canHostTunInbound = Global.TunInboundCoreTypes.Contains(context.RunCoreType);
 
-            if (!context.IsTunEnabled || !isUsingLocalMixedPort)
+            if (!context.IsTunEnabled || !isUsingLocalMixedPort || !canHostTunInbound)
             {
                 _coreConfig.inbounds.Add(inbound);
 
@@ -53,7 +54,12 @@ public partial class CoreConfigV2rayService
                 }
             }
 
-            if (context.IsTunEnabled)
+            if (context.IsTunEnabled && !canHostTunInbound)
+            {
+                Logging.SaveLog($"{_tag} - core {context.RunCoreType} has no tun inbound; TUN must be held by a helper core");
+            }
+
+            if (context.IsTunEnabled && canHostTunInbound)
             {
                 if (_config.TunModeItem.Mtu <= 0)
                 {

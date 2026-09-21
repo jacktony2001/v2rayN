@@ -587,6 +587,48 @@ public class CoreConfigV2rayServiceTests
     }
 
     [Test]
+    [Arguments(ECoreType.v2fly)]
+    [Arguments(ECoreType.v2fly_v5)]
+    public async Task GenerateClientConfigContent_TunWithCoreWithoutTunInbound_ShouldNotEmitTunInbound(ECoreType coreType)
+    {
+        var config = CoreConfigTestFactory.CreateConfigWithTun(coreType, false);
+        CoreConfigTestFactory.BindAppManagerConfig(config);
+
+        var node = CoreConfigTestFactory.CreateVmessNode(coreType, "n-main", "main");
+        var context = CoreConfigTestFactory.CreateContext(config, node, coreType);
+
+        var result = new CoreConfigV2rayService(context).GenerateClientConfigContent();
+
+        await result.Success.Should().BeTrue();
+        var cfg = JsonUtils.Deserialize<V2rayConfig>(result.Data!.ToString())!;
+
+        // v2ray-core rejects an unknown inbound protocol outright, taking the whole config down.
+        await cfg.inbounds.Should().NotContain(i => i.protocol == "tun");
+        await cfg.inbounds.Should().Contain(i => i.protocol == nameof(EInboundProtocol.mixed));
+    }
+
+    [Test]
+    public async Task GenerateClientConfigContent_TunWithCoreWithoutTunInbound_ShouldKeepLocalInbound()
+    {
+        var config = CoreConfigTestFactory.CreateConfigWithTun(ECoreType.v2fly, false);
+        CoreConfigTestFactory.BindAppManagerConfig(config);
+
+        var node = CoreConfigTestFactory.CreateVmessNode(ECoreType.v2fly, "n-main", "main");
+        node.Address = Global.Loopback;
+        node.Port = AppManager.Instance.GetLocalPort(EInboundProtocol.socks);
+        var context = CoreConfigTestFactory.CreateContext(config, node, ECoreType.v2fly);
+
+        var result = new CoreConfigV2rayService(context).GenerateClientConfigContent();
+
+        await result.Success.Should().BeTrue();
+        var cfg = JsonUtils.Deserialize<V2rayConfig>(result.Data!.ToString())!;
+
+        // The local inbound is what the helper core chains into; dropping it leaves the core dark.
+        await cfg.inbounds.Should().NotBeEmpty();
+        await cfg.inbounds.Should().Contain(i => i.protocol == nameof(EInboundProtocol.mixed));
+    }
+
+    [Test]
     [Arguments(true)]
     [Arguments(false)]
     public async Task GenerateClientConfigContent_Tun_ShouldSkipIPv6RouteWithoutGlobalIPv6(bool enableIPv6Address)
