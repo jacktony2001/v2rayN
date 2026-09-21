@@ -12,7 +12,7 @@ public partial class CoreConfigV2rayService
             var inboundConf = _config.Inbound.First();
             var inbound = BuildInbound(inboundConf, EInboundProtocol.socks, true);
             var isUsingLocalMixedPort = _node.Address == Global.Loopback && _node.Port == listenPort;
-            var canHostTunInbound = Global.TunInboundCoreTypes.Contains(context.RunCoreType);
+            var canHostTunInbound = Global.TunnelCapableCoreTypes.Contains(context.RunCoreType);
 
             if (!context.IsTunEnabled || !isUsingLocalMixedPort || !canHostTunInbound)
             {

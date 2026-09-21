@@ -572,9 +572,10 @@ public class Global
         "quic",
     ];
 
-    // v2ray-core has no "tun" inbound protocol at all, so handing it one makes the whole config
-    // invalid and the core refuses to start. Those cores need a helper core to hold the tunnel.
-    public static readonly List<ECoreType> TunInboundCoreTypes =
+    // Both the tun inbound and dialer-proxy chaining are Xray/sing-box features; v2ray-core has
+    // neither. Handing it one makes the whole config invalid (tun) or silently drops a hop
+    // (dialer-proxy), so these cores can never carry a tunnel themselves.
+    public static readonly List<ECoreType> TunnelCapableCoreTypes =
     [
         ECoreType.Xray,
         ECoreType.sing_box,

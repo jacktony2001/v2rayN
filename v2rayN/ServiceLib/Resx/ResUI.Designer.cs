@@ -2320,6 +2320,15 @@ namespace ServiceLib.Resx {
         }
         
         /// <summary>
+        ///   查找类似 Core {0} cannot tunnel one config through another (no dialer-proxy); this group runs on {1} instead. 的本地化字符串。
+        /// </summary>
+        public static string MsgChainNeedsTunnelCore {
+            get {
+                return ResourceManager.GetString("MsgChainNeedsTunnelCore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Unpacking... 的本地化字符串。
         /// </summary>
         public static string MsgUnpacking {
