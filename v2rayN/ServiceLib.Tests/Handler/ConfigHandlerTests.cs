@@ -1,3 +1,5 @@
+using ServiceLib.Tests.CoreConfig;
+
 namespace ServiceLib.Tests.Handler;
 
 public class ConfigHandlerTests
@@ -5,7 +7,7 @@ public class ConfigHandlerTests
     [Test]
     [Arguments(true)]
     [Arguments(false)]
-    public void GetPreSocksItem_V2flyWithTun_ShouldHandTunnelToSingboxHelper(bool legacyProtect)
+    public async Task GetPreSocksItem_V2flyWithTun_ShouldHandTunnelToSingboxHelper(bool legacyProtect)
     {
         var config = CoreConfigTestFactory.CreateConfigWithTun(ECoreType.v2fly, false);
         config.TunModeItem.EnableLegacyProtect = legacyProtect;
@@ -19,7 +21,7 @@ public class ConfigHandlerTests
     }
 
     [Test]
-    public void GetPreSocksItem_XrayWithoutLegacyProtect_ShouldNotBuildHelper()
+    public async Task GetPreSocksItem_XrayWithoutLegacyProtect_ShouldNotBuildHelper()
     {
         var config = CoreConfigTestFactory.CreateConfigWithTun(ECoreType.Xray, false);
         config.TunModeItem.EnableLegacyProtect = false;

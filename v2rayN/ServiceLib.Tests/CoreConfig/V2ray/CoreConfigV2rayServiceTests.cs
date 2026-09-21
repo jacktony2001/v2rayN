@@ -603,7 +603,7 @@ public class CoreConfigV2rayServiceTests
         var cfg = JsonUtils.Deserialize<V2rayConfig>(result.Data!.ToString())!;
 
         // v2ray-core rejects an unknown inbound protocol outright, taking the whole config down.
-        await cfg.inbounds.Should().NotContain(i => i.protocol == "tun");
+        await cfg.inbounds.Any(i => i.protocol == "tun").Should().BeFalse();
         await cfg.inbounds.Should().Contain(i => i.protocol == nameof(EInboundProtocol.mixed));
     }
 
