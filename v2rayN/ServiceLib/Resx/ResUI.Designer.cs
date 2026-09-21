@@ -2329,6 +2329,24 @@ namespace ServiceLib.Resx {
         }
         
         /// <summary>
+        ///   查找类似 Auto route is switched off, so no traffic is routed into the tunnel even while TUN is enabled. 的本地化字符串。
+        /// </summary>
+        public static string MsgTunAutoRouteDisabled {
+            get {
+                return ResourceManager.GetString("MsgTunAutoRouteDisabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 TUN options {0} only take effect when sing-box holds the tunnel; core {1} ignores them. 的本地化字符串。
+        /// </summary>
+        public static string MsgTunOptionsIgnoredByCore {
+            get {
+                return ResourceManager.GetString("MsgTunOptionsIgnoredByCore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Unpacking... 的本地化字符串。
         /// </summary>
         public static string MsgUnpacking {

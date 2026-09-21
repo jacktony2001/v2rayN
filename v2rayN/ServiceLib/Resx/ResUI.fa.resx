@@ -1779,4 +1779,10 @@ The "Get Certificate" action may fail if a self-signed certificate is used or if
   <data name="MsgChainNeedsTunnelCore" xml:space="preserve">
     <value>هسته {0} نمی‌تواند یک کانفیگ را داخل کانفیگ دیگر تونل کند (dialer-proxy ندارد)؛ این گروه به‌جای آن با {1} اجرا می‌شود.</value>
   </data>
+  <data name="MsgTunAutoRouteDisabled" xml:space="preserve">
+    <value>مسیردهی خودکار خاموش است؛ حتی وقتی TUN روشن است هیچ ترافیکی وارد تونل نمی‌رود.</value>
+  </data>
+  <data name="MsgTunOptionsIgnoredByCore" xml:space="preserve">
+    <value>گزینه‌های TUN ({0}) فقط وقتی اثر دارند که sing-box تونل را نگه داشته باشد؛ هسته {1} این‌ها را نادیده می‌گیرد.</value>
+  </data>
 </root>

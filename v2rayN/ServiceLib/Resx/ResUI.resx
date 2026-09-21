@@ -1809,6 +1809,12 @@ The "Get Certificate" action may fail if a self-signed certificate is used or if
   <data name="MsgChainNeedsTunnelCore" xml:space="preserve">
     <value>Core {0} cannot tunnel one config through another (no dialer-proxy); this group runs on {1} instead.</value>
   </data>
+  <data name="MsgTunAutoRouteDisabled" xml:space="preserve">
+    <value>Auto route is switched off, so no traffic is routed into the tunnel even while TUN is enabled.</value>
+  </data>
+  <data name="MsgTunOptionsIgnoredByCore" xml:space="preserve">
+    <value>TUN options {0} only take effect when sing-box holds the tunnel; core {1} ignores them.</value>
+  </data>
   <data name="MsgOptionsConflict" xml:space="preserve">
     <value>Conflict between {0} and {1}</value>
   </data>

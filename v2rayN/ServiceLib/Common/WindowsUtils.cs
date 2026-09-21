@@ -54,7 +54,9 @@ internal static class WindowsUtils
 
     public static async Task RemoveTunDevice()
     {
-        var tunNameList = new List<string> { "wintunsingbox_tun", "xray_tun" };
+        // singbox_tun is the name the sing-box generator actually assigns the interface; the
+        // legacy name stays in the list so leftovers from older versions still get cleaned up.
+        var tunNameList = new List<string> { "wintunsingbox_tun", "singbox_tun", "xray_tun" };
         foreach (var tunName in tunNameList)
         {
             try
