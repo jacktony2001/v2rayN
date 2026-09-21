@@ -2311,6 +2311,15 @@ namespace ServiceLib.Resx {
         }
         
         /// <summary>
+        ///   查找类似 Core {0} has no tun inbound, so it cannot carry the tunnel itself. A {1} helper core will hold TUN and forward to it. 的本地化字符串。
+        /// </summary>
+        public static string MsgTunNeedsHelperCore {
+            get {
+                return ResourceManager.GetString("MsgTunNeedsHelperCore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Unpacking... 的本地化字符串。
         /// </summary>
         public static string MsgUnpacking {

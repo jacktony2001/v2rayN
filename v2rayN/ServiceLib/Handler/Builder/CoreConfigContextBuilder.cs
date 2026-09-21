@@ -53,6 +53,10 @@ public class CoreConfigContextBuilder
             ProtectCoreTypeList = config.TunModeItem.EnableTun ? [ECoreType.Xray, ECoreType.sing_box] : []
         };
         var validatorResult = NodeValidatorResult.Empty();
+        if (context.IsTunEnabled && runCoreType is ECoreType.v2fly or ECoreType.v2fly_v5)
+        {
+            validatorResult.Warnings.Add(string.Format(ResUI.MsgTunNeedsHelperCore, runCoreType, ECoreType.sing_box));
+        }
         var (actNode, nodeValidatorResult) = await ResolveNodeAsync(context, node);
         if (!nodeValidatorResult.Success)
         {

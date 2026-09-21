@@ -1803,6 +1803,9 @@ The "Get Certificate" action may fail if a self-signed certificate is used or if
   <data name="MsgTunRouteExcludeInvalidAddress" xml:space="preserve">
     <value>Invalid address in TUN route exclude list: {0}</value>
   </data>
+  <data name="MsgTunNeedsHelperCore" xml:space="preserve">
+    <value>Core {0} has no tun inbound, so it cannot carry the tunnel itself. A {1} helper core will hold TUN and forward to it.</value>
+  </data>
   <data name="MsgOptionsConflict" xml:space="preserve">
     <value>Conflict between {0} and {1}</value>
   </data>

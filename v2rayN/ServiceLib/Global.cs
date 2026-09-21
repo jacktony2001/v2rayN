@@ -572,6 +572,14 @@ public class Global
         "quic",
     ];
 
+    // v2ray-core has no "tun" inbound protocol at all, so handing it one makes the whole config
+    // invalid and the core refuses to start. Those cores need a helper core to hold the tunnel.
+    public static readonly List<ECoreType> TunInboundCoreTypes =
+    [
+        ECoreType.Xray,
+        ECoreType.sing_box,
+    ];
+
     public static readonly List<int> TunMtus =
     [
         1280,
